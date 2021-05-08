@@ -13,7 +13,7 @@ program tsunami
 
     integer :: i, step
 
-    real, dimension(grid_size) :: h, dh
+    real, dimension(grid_size) :: h
 
     ! Sense check values
     if (num_steps <= 0) stop 'Must run for positive num_steps'
@@ -23,15 +23,10 @@ program tsunami
 
     call populate_gaussian(h, mu, decay)
 
-
     print *, 0, h  ! Print initial values to STDOUT
 
     update_loop: do step = 1, num_steps
-        dh(1) = h(1) - h(grid_size)  ! Periodic BCs
-
-        dh(2:) = h(2:) - h(1:grid_size - 1)
-        h = h - flow_vel * dh / dx * dt
-
+        h = h - flow_vel * diff(h) / dx * dt
         print *, step, h
     end do update_loop
 
@@ -50,5 +45,16 @@ subroutine populate_gaussian(array, mu, decay)
         array(i) = exp(-decay * (i - mu) ** 2)
     end do
 end subroutine populate_gaussian
+
+function diff(levels)
+    real, intent(in) :: levels(:)
+    real :: diff(size(levels))
+    integer :: imax
+
+    imax = size(levels)
+
+    diff(1) = levels(1) - levels(imax)  ! Periodid BCs
+    diff(2:) = levels(2:) - levels(1:imax - 1)
+end function diff
 
 end program tsunami
