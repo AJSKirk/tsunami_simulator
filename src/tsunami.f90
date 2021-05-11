@@ -46,7 +46,7 @@ subroutine populate_gaussian(array, mu, decay)
     end do
 end subroutine populate_gaussian
 
-function diff(levels)
+pure real function diff(levels)
     real, intent(in) :: levels(:)
     real :: diff(size(levels))
     integer :: imax
