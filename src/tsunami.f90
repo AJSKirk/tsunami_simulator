@@ -1,4 +1,6 @@
 program tsunami
+    use mod_diff, only: diff
+    use mod_initial, only: populate_gaussian
     implicit none
 
     integer, parameter :: grid_size = 100
@@ -29,32 +31,5 @@ program tsunami
         h = h - flow_vel * diff(h) / dx * dt
         print *, step, h
     end do update_loop
-
-contains
-
-subroutine populate_gaussian(array, mu, decay)
-    implicit none
-
-    real, intent(in out) :: array(:)
-    integer, intent(in) :: mu
-    real, intent(in) :: decay
-
-    integer :: i
-
-    do concurrent(i = 1:size(array))
-        array(i) = exp(-decay * (i - mu) ** 2)
-    end do
-end subroutine populate_gaussian
-
-pure real function diff(levels)
-    real, intent(in) :: levels(:)
-    real :: diff(size(levels))
-    integer :: imax
-
-    imax = size(levels)
-
-    diff(1) = levels(1) - levels(imax)  ! Periodid BCs
-    diff(2:) = levels(2:) - levels(1:imax - 1)
-end function diff
 
 end program tsunami
