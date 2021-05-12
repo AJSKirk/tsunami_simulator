@@ -2,6 +2,8 @@ module mod_initial
 
     use iso_fortran_env, only: int32, real32
     implicit none
+    private
+    public populate_gaussian
 
 contains
 
